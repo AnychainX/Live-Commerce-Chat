@@ -11,6 +11,7 @@ interface Message {
   type: "CHAT" | "ANNOUNCEMENT";
   timestamp: number;
   deleted: boolean;
+  reactions?: { [emoji: string]: string[] };
 }
 
 interface User {
@@ -245,6 +246,7 @@ export function createSocketServer(httpServer: ReturnType<typeof createServer>) 
           type,
           timestamp: Date.now(),
           deleted: false,
+          reactions: {},
         };
 
         addMessage(roomId, message);
@@ -341,6 +343,34 @@ export function createSocketServer(httpServer: ReturnType<typeof createServer>) 
         io.to(roomId).emit("viewer_count_updated", roomData.room.viewerCount);
       }
     });
+
+    // Handle emoji reaction
+    socket.on(
+      "add_reaction",
+      ({ roomId, messageId, emoji }: { roomId: string; messageId: string; emoji: string }) => {
+        const roomData = getRoomData(roomId);
+        if (!roomData) return;
+
+        const message = roomData.messages.find((m) => m.id === messageId);
+        if (message) {
+          if (!message.reactions) message.reactions = {};
+          if (!message.reactions[emoji]) message.reactions[emoji] = [];
+          
+          // Toggle reaction
+          const userIndex = message.reactions[emoji].indexOf(socket.id);
+          if (userIndex === -1) {
+            message.reactions[emoji].push(socket.id);
+          } else {
+            message.reactions[emoji].splice(userIndex, 1);
+            if (message.reactions[emoji].length === 0) {
+              delete message.reactions[emoji];
+            }
+          }
+          
+          io.to(roomId).emit("reaction_updated", { messageId, reactions: message.reactions });
+        }
+      }
+    );
 
     socket.on("disconnect", () => {
       console.log("Client disconnected:", socket.id);

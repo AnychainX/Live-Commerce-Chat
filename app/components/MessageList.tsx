@@ -11,6 +11,7 @@ interface MessageListProps {
   scrollToBottom: () => void;
   onDeleteMessage: (messageId: string) => void;
   onBanUser: (userId: string) => void;
+  onReact?: (messageId: string, emoji: string) => void;
   canModerate?: boolean;
 }
 
@@ -23,6 +24,7 @@ export function MessageList({
   scrollToBottom,
   onDeleteMessage,
   onBanUser,
+  onReact,
   canModerate = true,
 }: MessageListProps) {
   const [pinnedMessages, setPinnedMessages] = useState<Set<string>>(new Set());
@@ -72,6 +74,7 @@ export function MessageList({
               isCurrentUser={message.userId === currentUserId}
               onDelete={onDeleteMessage}
               onBan={onBanUser}
+              onReact={onReact}
               canModerate={canModerate}
               isPinned
             />
@@ -97,6 +100,7 @@ export function MessageList({
               isCurrentUser={message.userId === currentUserId}
               onDelete={onDeleteMessage}
               onBan={onBanUser}
+              onReact={onReact}
               canModerate={canModerate}
             />
           ))

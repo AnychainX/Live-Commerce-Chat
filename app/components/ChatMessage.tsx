@@ -7,6 +7,7 @@ interface ChatMessageProps {
   isCurrentUser: boolean;
   onDelete: (messageId: string) => void;
   onBan: (userId: string) => void;
+  onReact?: (messageId: string, emoji: string) => void;
   canModerate?: boolean;
   isPinned?: boolean;
 }
@@ -17,10 +18,14 @@ export function ChatMessage({
   isCurrentUser,
   onDelete,
   onBan,
+  onReact,
   canModerate = true,
   isPinned = false,
 }: ChatMessageProps) {
   const [showActions, setShowActions] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
+  const quickEmojis = ["❤️", "👍", "🔥", "😂", "👏"];
 
   const getAvatar = (username: string) => {
     const colors = [
@@ -103,9 +108,61 @@ export function ChatMessage({
               message.text
             )}
           </p>
+
+          {/* Reactions */}
+          {message.reactions && Object.keys(message.reactions).length > 0 && (
+            <div className="flex flex-wrap gap-1 mt-2">
+              {Object.entries(message.reactions).map(([emoji, userIds]) => (
+                <button
+                  key={emoji}
+                  onClick={() => onReact?.(message.id, emoji)}
+                  className="px-2 py-0.5 bg-gray-700 hover:bg-gray-600 rounded-full text-xs flex items-center gap-1 transition-colors"
+                >
+                  <span>{emoji}</span>
+                  <span className="text-gray-300">{userIds.length}</span>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Hover Actions */}
+        {showActions && !message.deleted && (
+          <div className="flex-shrink-0 flex gap-1 relative">
+            {/* Emoji Reaction Button */}
+            {onReact && (
+              <div className="relative">
+                <button
+                  onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                  className="px-2 py-1 bg-gray-700 hover:bg-gray-600 text-white text-xs rounded transition-colors"
+                  title="React"
+                >
+                  😊
+                </button>
+                
+                {/* Emoji Picker */}
+                {showEmojiPicker && (
+                  <div className="absolute bottom-full right-0 mb-1 bg-gray-800 border border-gray-600 rounded-lg p-2 flex gap-1 shadow-xl z-10">
+                    {quickEmojis.map((emoji) => (
+                      <button
+                        key={emoji}
+                        onClick={() => {
+                          onReact(message.id, emoji);
+                          setShowEmojiPicker(false);
+                        }}
+                        className="hover:scale-125 transition-transform text-lg"
+                      >
+                        {emoji}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Moderation Actions */}
         {showActions && !message.deleted && canModerate && (
           <div className="flex-shrink-0 flex gap-1">
             <button

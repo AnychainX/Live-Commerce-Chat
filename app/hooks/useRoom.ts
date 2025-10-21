@@ -17,6 +17,7 @@ interface UseRoomReturn {
   banUser: (userId: string) => void;
   clearAllMessages: () => void;
   toggleSlowMode: (enabled: boolean) => void;
+  addReaction: (messageId: string, emoji: string) => void;
 }
 
 const SOCKET_URL = "http://localhost:3001";
@@ -124,6 +125,14 @@ export function useRoom(roomId: string, username: string, isHost: boolean): UseR
       setViewerCount(count);
     });
 
+    newSocket.on("reaction_updated", ({ messageId, reactions }: { messageId: string; reactions: any }) => {
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === messageId ? { ...msg, reactions } : msg
+        )
+      );
+    });
+
     newSocket.on("error", ({ message }: { message: string }) => {
       console.error("Socket error:", message);
       alert(message);
@@ -180,6 +189,15 @@ export function useRoom(roomId: string, username: string, isHost: boolean): UseR
     [socket, connected, roomId]
   );
 
+  const addReaction = useCallback(
+    (messageId: string, emoji: string) => {
+      if (socket && connected) {
+        socket.emit("add_reaction", { roomId, messageId, emoji });
+      }
+    },
+    [socket, connected, roomId]
+  );
+
   return {
     socket,
     connected,
@@ -195,6 +213,7 @@ export function useRoom(roomId: string, username: string, isHost: boolean): UseR
     banUser,
     clearAllMessages,
     toggleSlowMode,
+    addReaction,
   };
 }
 

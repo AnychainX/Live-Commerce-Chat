@@ -6,6 +6,7 @@ export interface Message {
   type: "CHAT" | "ANNOUNCEMENT";
   timestamp: number;
   deleted: boolean;
+  reactions?: { [emoji: string]: string[] }; // emoji -> array of userIds
 }
 
 export interface User {

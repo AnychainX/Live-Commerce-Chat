@@ -8,6 +8,7 @@ import { MessageList } from "~/components/MessageList";
 import { MessageInput } from "~/components/MessageInput";
 import { ModeratorPanel } from "~/components/ModeratorPanel";
 import { VideoPlayer } from "~/components/VideoPlayer";
+import { HostInfoPanel } from "~/components/HostInfoPanel";
 
 export const meta: MetaFunction = () => {
   return [
@@ -51,6 +52,7 @@ export default function RoomPage() {
     banUser,
     clearAllMessages,
     toggleSlowMode,
+    addReaction,
   } = useRoom(roomId || "", username, isHost);
 
   const { scrollRef, isUserScrolling, scrollToBottom } = useAutoScroll([
@@ -76,6 +78,24 @@ export default function RoomPage() {
   const handleBuyNow = () => {
     const url = room?.shopifyUrl || "https://www.shopify.com";
     window.open(url, "_blank");
+  };
+
+  const handleShareRoom = () => {
+    const url = window.location.href;
+    if (navigator.share) {
+      navigator.share({
+        title: room?.name || "Live Shopping Room",
+        text: `Join me watching ${room?.productName}!`,
+        url: url,
+      }).catch(() => {
+        // Fallback to copy
+        navigator.clipboard.writeText(url);
+        alert("Room link copied to clipboard!");
+      });
+    } else {
+      navigator.clipboard.writeText(url);
+      alert("Room link copied to clipboard!");
+    }
   };
 
   const isUserHost = currentUser?.role === "host";
@@ -260,6 +280,15 @@ export default function RoomPage() {
             </p>
           </div>
 
+          {/* Host Info Panel */}
+          <div className="flex-shrink-0">
+            <HostInfoPanel
+              room={room}
+              viewerCount={viewerCount}
+              onShare={handleShareRoom}
+            />
+          </div>
+
           {/* Connection Status */}
           <div className="flex-shrink-0">
             <ConnectionStatus status={connectionStatus} />
@@ -296,6 +325,7 @@ export default function RoomPage() {
               scrollToBottom={scrollToBottom}
               onDeleteMessage={deleteMessage}
               onBanUser={banUser}
+              onReact={addReaction}
               canModerate={isUserHost}
             />
           </div>
