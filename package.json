@@ -10,6 +10,7 @@
     "dev:socket": "tsx watch dev-server.js",
     "build": "remix vite:build",
     "start": "remix-serve ./build/server/index.js",
+    "start:socket": "tsx socket-server.ts",
     "typecheck": "tsc",
     "test": "vitest",
     "test:ui": "vitest --ui"
