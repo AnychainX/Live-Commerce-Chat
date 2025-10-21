@@ -1,52 +1,88 @@
+/**
+ * VideoPlayer Component
+ * 
+ * HLS video player for live shopping streams with custom controls
+ * 
+ * Features:
+ * - HLS.js integration for adaptive bitrate streaming
+ * - Custom playback controls (play/pause, volume, mute)
+ * - Picture-in-Picture support
+ * - Fullscreen capability
+ * - "LIVE" indicator badge
+ * - Automatic error recovery for network issues
+ * - Native HTML5 video fallback for Safari
+ * 
+ * VIDEO NOTE: Currently uses a template/demo HLS stream.
+ * In production, sellers would provide their own live stream URLs from
+ * services like Mux, AWS IVS, or other streaming platforms.
+ * 
+ * @param videoUrl - HLS stream URL (.m3u8 file)
+ * @param autoPlay - Whether to start playing automatically (default: true)
+ */
+
 import { useEffect, useRef, useState } from "react";
 import Hls from "hls.js";
 
 interface VideoPlayerProps {
-  videoUrl?: string;
-  autoPlay?: boolean;
+  videoUrl?: string;  // HLS stream URL
+  autoPlay?: boolean; // Auto-start playback
 }
 
 export function VideoPlayer({
-  videoUrl = "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+  videoUrl = "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", // Template video for demo
   autoPlay = true,
 }: VideoPlayerProps) {
+  // Video element reference
   const videoRef = useRef<HTMLVideoElement>(null);
+  
+  // Player state
   const [isPlaying, setIsPlaying] = useState(autoPlay);
-  const [volume, setVolume] = useState(0.7);
+  const [volume, setVolume] = useState(0.7); // Default 70% volume
   const [isMuted, setIsMuted] = useState(false);
 
+  /**
+   * Initialize HLS player and set up event handlers
+   * Uses HLS.js for browsers that don't support native HLS (most browsers except Safari)
+   * Safari supports HLS natively through the <video> tag
+   */
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
+    // Check if HLS.js is supported (not Safari)
     if (Hls.isSupported()) {
+      // Create HLS instance with optimized settings
       const hls = new Hls({
-        enableWorker: true,
-        lowLatencyMode: true,
+        enableWorker: true,     // Use web workers for better performance
+        lowLatencyMode: true,   // Optimize for live streaming
       });
 
+      // Load the HLS stream
       hls.loadSource(videoUrl);
       hls.attachMedia(video);
 
+      // Event: Stream manifest loaded successfully
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
         if (autoPlay) {
+          // Attempt autoplay (may be blocked by browser policy)
           video.play().catch((err) => {
             console.warn("Autoplay prevented:", err);
-            setIsPlaying(false);
+            setIsPlaying(false); // Update UI to show play button
           });
         }
       });
 
+      // Event: Handle HLS errors with automatic recovery
       hls.on(Hls.Events.ERROR, (event, data) => {
         if (data.fatal) {
           switch (data.type) {
             case Hls.ErrorTypes.NETWORK_ERROR:
-              console.error("Network error");
-              hls.startLoad();
+              console.error("Network error - attempting recovery");
+              hls.startLoad(); // Retry loading
               break;
             case Hls.ErrorTypes.MEDIA_ERROR:
-              console.error("Media error");
-              hls.recoverMediaError();
+              console.error("Media error - attempting recovery");
+              hls.recoverMediaError(); // Try to recover
               break;
             default:
               console.error("Fatal error");

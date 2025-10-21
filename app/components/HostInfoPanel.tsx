@@ -1,13 +1,37 @@
+/**
+ * HostInfoPanel Component
+ * 
+ * Displays seller/host profile information in an expandable panel
+ * Helps build trust and credibility for the seller before buyers make purchases
+ * 
+ * Features:
+ * - Collapsible panel to save space
+ * - Host avatar with name
+ * - Real-time viewer count
+ * - Seller stats (rating, sales, verified badge)
+ * - About section with seller bio
+ * - Share room button for viral marketing
+ * - Quick action buttons (More Products, Follow Seller)
+ * 
+ * NOTE: Stats like "4.9 Rating" and "1.2k Sales" are currently static placeholders.
+ * In production, these would be fetched from your user database.
+ * 
+ * @param room - Room metadata including host name
+ * @param viewerCount - Current number of viewers in the room
+ * @param onShare - Callback function when share button is clicked
+ */
+
 import { useState } from "react";
 import type { Room } from "~/types/chat";
 
 interface HostInfoPanelProps {
-  room: Room;
-  viewerCount: number;
-  onShare: () => void;
+  room: Room;           // Room data with host information
+  viewerCount: number;  // Real-time viewer count
+  onShare: () => void;  // Share functionality callback
 }
 
 export function HostInfoPanel({ room, viewerCount, onShare }: HostInfoPanelProps) {
+  // Track whether the panel is expanded or collapsed
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (

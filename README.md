@@ -2,6 +2,8 @@
 
 A real-time live shopping platform built with **Remix**, **Socket.IO**, and **TypeScript**. Think **QVC meets Instagram Live** - merchants broadcast live video while showcasing products, and viewers can buy in real-time during the stream.
 
+> **📹 NOTE ABOUT VIDEO STREAMING:** This demo uses a **template HLS video stream** for demonstration purposes. In a production environment, sellers would start their own live streams using services like Mux, AWS IVS, or similar platforms, and provide the HLS playback URL when creating a room. See the [Video Streaming Setup](#-video-streaming-setup) section for details.
+
 ## ✨ Features
 
 ### 🛍️ Multi-Room Shopping
@@ -106,6 +108,88 @@ This starts:
 3. **Tab 3**: Join as another viewer
 4. Chat messages sync instantly across all tabs!
 5. Test moderation: host can delete/ban viewers
+
+---
+
+## 📹 Video Streaming Setup
+
+### Current Demo Implementation
+
+This project currently uses a **template/demo HLS video stream** for testing and demonstration purposes:
+
+```typescript
+// Default video URL in server.ts (line 293)
+videoUrl: videoUrl || "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
+```
+
+**This is intentional for the demo** to allow you to immediately test the platform without setting up a streaming service.
+
+### Production Implementation
+
+In a **real production environment**, here's how sellers would provide live video:
+
+#### Option 1: Mux (Recommended)
+1. **Seller starts a live stream:**
+   - Sign up for [Mux](https://mux.com/)
+   - Create a new "Live Stream" in Mux dashboard
+   - Mux provides:
+     - **RTMP URL** (for broadcasting software like OBS)
+     - **HLS Playback URL** (for viewers to watch)
+
+2. **Seller creates room with their stream:**
+   ```typescript
+   // When creating room, provide Mux playback URL
+   videoUrl: "https://stream.mux.com/[PLAYBACK_ID].m3u8"
+   ```
+
+3. **Seller broadcasts:**
+   - Use OBS, Streamlabs, or mobile app
+   - Stream to the RTMP URL provided by Mux
+   - Viewers watch via the HLS playback URL
+
+#### Option 2: AWS IVS (Interactive Video Service)
+1. Create an AWS IVS channel
+2. Get the RTMP ingest endpoint and playback URL
+3. Broadcast using streaming software
+4. Provide playback URL when creating room
+
+#### Option 3: Other Services
+- **YouTube Live**: Use YouTube Live Stream API
+- **Twitch**: Integrate Twitch embed player
+- **Custom RTMP Server**: Self-hosted with Nginx-RTMP module
+
+### How to Replace Template Video
+
+To use real live streams, modify `server.ts`:
+
+```typescript
+// Before (Demo):
+videoUrl: videoUrl || "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
+
+// After (Production):
+videoUrl: videoUrl  // No default - require sellers to provide URL
+// Or validate it's from your streaming service:
+if (!videoUrl || !videoUrl.includes('your-streaming-service.com')) {
+  throw new Error('Please provide a valid live stream URL');
+}
+```
+
+### Technical Details
+
+**HLS (HTTP Live Streaming):**
+- Industry-standard protocol for adaptive bitrate streaming
+- Works on all modern browsers via HLS.js library
+- Automatically adjusts quality based on connection speed
+- ~10-30 second latency (acceptable for live shopping)
+
+**For Lower Latency:**
+- Use WebRTC-based solutions (< 1 second latency)
+- Services like Mux offer low-latency HLS (< 3 seconds)
+
+**Current Video Player:**
+- Located in: `app/components/VideoPlayer.tsx`
+- Uses: HLS.js library for playback
+- Supports: Custom controls, quality switching, error recovery
 
 ## 🏗️ Architecture
 
