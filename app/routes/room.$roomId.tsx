@@ -320,6 +320,7 @@ export default function RoomPage() {
               messages={messages}
               bannedUsers={bannedUsers}
               currentUserId={currentUser?.id || null}
+              hostId={room?.hostId}
               scrollRef={scrollRef}
               isUserScrolling={isUserScrolling}
               scrollToBottom={scrollToBottom}

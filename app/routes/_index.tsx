@@ -63,7 +63,7 @@ export default function Index() {
                 <span className="text-2xl">🛍️</span>
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-white">ShopifyLive</h1>
+                <h1 className="text-2xl font-bold text-white">LeftLane Marketing</h1>
                 <p className="text-sm text-gray-400">Live Shopping Platform</p>
               </div>
             </div>

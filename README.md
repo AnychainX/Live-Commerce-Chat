@@ -1,6 +1,6 @@
-# Live Shopping Platform - Shopify Live Commerce
+# LeftLane Marketing - Live Shopping Platform
 
-A real-time live shopping platform built with **Remix**, **Socket.IO**, and **TypeScript**. Think **QVC meets Instagram Live** - merchants broadcast live video while showcasing products, and viewers can buy in real-time during the stream.
+A real-time live shopping platform built with **Remix**, **Socket.IO**, and **TypeScript** for Shopify merchants. Think **QVC meets Instagram Live** - merchants broadcast live video while showcasing products, and viewers can buy in real-time during the stream.
 
 > **📹 NOTE ABOUT VIDEO STREAMING:** This demo uses a **template HLS video stream** for demonstration purposes. In a production environment, sellers would start their own live streams using services like Mux, AWS IVS, or similar platforms, and provide the HLS playback URL when creating a room. See the [Video Streaming Setup](#-video-streaming-setup) section for details.
 

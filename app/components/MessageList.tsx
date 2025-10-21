@@ -28,6 +28,7 @@ interface MessageListProps {
   messages: Message[];
   bannedUsers: Set<string>;
   currentUserId: string | null;
+  hostId?: string;                                   // ID of the room host
   scrollRef: React.RefObject<HTMLDivElement>;        // From useAutoScroll hook
   isUserScrolling: boolean;                          // True if user scrolled up
   scrollToBottom: () => void;                        // Function to scroll to bottom
@@ -41,6 +42,7 @@ export function MessageList({
   messages,
   bannedUsers,
   currentUserId,
+  hostId,
   scrollRef,
   isUserScrolling,
   scrollToBottom,
@@ -94,6 +96,7 @@ export function MessageList({
               message={message}
               isBanned={bannedUsers.has(message.userId)}
               isCurrentUser={message.userId === currentUserId}
+              isHost={hostId === message.userId}
               onDelete={onDeleteMessage}
               onBan={onBanUser}
               onReact={onReact}
@@ -120,6 +123,7 @@ export function MessageList({
               message={message}
               isBanned={bannedUsers.has(message.userId)}
               isCurrentUser={message.userId === currentUserId}
+              isHost={hostId === message.userId}
               onDelete={onDeleteMessage}
               onBan={onBanUser}
               onReact={onReact}
