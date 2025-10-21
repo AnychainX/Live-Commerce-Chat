@@ -65,9 +65,11 @@ export function useAutoScroll(dependencies: any[]): UseAutoScrollReturn {
       // Instant scroll to bottom (no smooth animation for better UX in fast chat)
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
       
-      // Reset flag after a short delay to allow scroll event to complete
+      // Reset flag and update state after scroll completes
       setTimeout(() => {
         isAutoScrollingRef.current = false;
+        // Since we just scrolled to bottom, user is no longer "scrolling up"
+        setIsUserScrolling(false);
       }, 100);
     }
   };
@@ -109,13 +111,19 @@ export function useAutoScroll(dependencies: any[]): UseAutoScrollReturn {
   /**
    * Auto-scroll effect triggered by dependency changes (new messages)
    * Uses setTimeout(0) to ensure DOM has updated before scrolling
+   * 
+   * IMPORTANT: Only auto-scrolls if user is NOT reading history
+   * If user has scrolled up to read old messages, we respect that and don't force them down
    */
   useEffect(() => {
-    // Always scroll to bottom when dependencies change (new messages arrive)
-    // setTimeout ensures the DOM has rendered the new messages first
-    setTimeout(() => {
-      scrollToBottom();
-    }, 0);
+    // Only auto-scroll if user is NOT reading history (not manually scrolled up)
+    if (!isUserScrolling) {
+      // setTimeout ensures the DOM has rendered the new messages first
+      setTimeout(() => {
+        scrollToBottom();
+      }, 0);
+    }
+    // If user IS scrolling (reading history), do nothing - let them read in peace
   }, dependencies); // Re-run when dependencies change (e.g., messages.length increases)
 
   return {

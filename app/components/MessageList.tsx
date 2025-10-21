@@ -1,3 +1,25 @@
+/**
+ * MessageList Component
+ * 
+ * Displays chat messages with intelligent scroll behavior
+ * 
+ * Features:
+ * - Pinned announcements (displayed for 30 seconds at top)
+ * - Regular messages in scrollable container
+ * - Auto-scroll to new messages (only when user is at bottom)
+ * - "New messages" button when user is reading history
+ * - Respects user's scroll position (no forced scrolling)
+ * 
+ * Scroll Behavior:
+ * - When user is at bottom: New messages auto-scroll to bottom
+ * - When user scrolls up (reading history): New messages DON'T force scroll
+ * - Instead, a "New messages ↓" button appears for manual scrolling
+ * 
+ * @param scrollRef - Ref to attach to scrollable container (from useAutoScroll)
+ * @param isUserScrolling - True when user has scrolled up to read history
+ * @param scrollToBottom - Function to manually scroll to bottom
+ */
+
 import { useEffect, useState } from "react";
 import type { Message } from "~/types/chat";
 import { ChatMessage } from "./ChatMessage";
@@ -6,9 +28,9 @@ interface MessageListProps {
   messages: Message[];
   bannedUsers: Set<string>;
   currentUserId: string | null;
-  scrollRef: React.RefObject<HTMLDivElement>;
-  isUserScrolling: boolean;
-  scrollToBottom: () => void;
+  scrollRef: React.RefObject<HTMLDivElement>;        // From useAutoScroll hook
+  isUserScrolling: boolean;                          // True if user scrolled up
+  scrollToBottom: () => void;                        // Function to scroll to bottom
   onDeleteMessage: (messageId: string) => void;
   onBanUser: (userId: string) => void;
   onReact?: (messageId: string, emoji: string) => void;
@@ -62,7 +84,7 @@ export function MessageList({
   const regularMessages = messages.filter((msg) => !pinnedMessages.has(msg.id));
 
   return (
-    <div className="h-full flex flex-col overflow-hidden">
+    <div className="h-full flex flex-col overflow-hidden relative">
       {/* Pinned Messages */}
       {pinnedMessageList.length > 0 && (
         <div className="flex-shrink-0 bg-purple-900/30 border-b border-purple-700 p-3 space-y-2 max-h-40 overflow-y-auto scrollbar-thin">
@@ -106,6 +128,18 @@ export function MessageList({
           ))
         )}
       </div>
+
+      {/* New Messages Button - Appears when user has scrolled up */}
+      {isUserScrolling && (
+        <button
+          onClick={scrollToBottom}
+          className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2 transition-all animate-bounce z-10"
+          aria-label="Scroll to new messages"
+        >
+          <span>New messages</span>
+          <span>↓</span>
+        </button>
+      )}
     </div>
   );
 }
