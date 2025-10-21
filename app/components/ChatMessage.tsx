@@ -70,28 +70,29 @@ export function ChatMessage({
   };
 
   return (
-    <div
-      className={`group relative flex gap-3 p-3 rounded-lg transition-all z-10 ${
-        showEmojiPicker ? "z-[60]" : ""  // Increase z-index when emoji picker is open
-      } ${
-        isCurrentUser ? "flex-row-reverse" : ""  // Right align for current user
-      } ${
-        isPinned
-          ? "bg-purple-900/50 border border-purple-500 shadow-lg shadow-purple-900/50"
-          : message.type === "ANNOUNCEMENT"
-          ? "bg-purple-900/30 border border-purple-700"
-          : isHost
-          ? "bg-gradient-to-r from-blue-900/60 to-blue-800/40 border-l-4 border-l-blue-400 border border-blue-600/50 shadow-lg shadow-blue-900/50"  // Strong host highlight
-          : isCurrentUser
-          ? "bg-green-900/20 border border-green-800/50"  // Subtle highlight for own messages
-          : "hover:bg-gray-800 border border-transparent"
-      } ${isBanned ? "opacity-50" : ""}`}
-      onMouseEnter={() => setShowActions(true)}
-      onMouseLeave={() => {
-        setShowActions(false);
-        setShowEmojiPicker(false);
-      }}
-    >
+    <div className={`flex ${isCurrentUser ? "justify-end" : "justify-start"} w-full`}>
+      <div
+        className={`group relative flex gap-3 p-3 rounded-lg transition-all z-10 ${
+          showEmojiPicker ? "z-[60]" : ""  // Increase z-index when emoji picker is open
+        } ${
+          isCurrentUser ? "flex-row-reverse max-w-[75%]" : "max-w-[85%]"  // Bubble width for current user
+        } ${
+          isPinned
+            ? "bg-purple-900/50 border border-purple-500 shadow-lg shadow-purple-900/50"
+            : message.type === "ANNOUNCEMENT"
+            ? "bg-purple-900/30 border border-purple-700"
+            : isHost
+            ? "bg-gradient-to-r from-blue-900/60 to-blue-800/40 border-l-4 border-l-blue-400 border border-blue-600/50 shadow-lg shadow-blue-900/50"  // Strong host highlight
+            : isCurrentUser
+            ? "bg-green-900/20 border border-green-800/50"  // Subtle highlight for own messages
+            : "hover:bg-gray-800 border border-transparent"
+        } ${isBanned ? "opacity-50" : ""}`}
+        onMouseEnter={() => setShowActions(true)}
+        onMouseLeave={() => {
+          setShowActions(false);
+          setShowEmojiPicker(false);
+        }}
+      >
       {/* Host Badge - Top Left Corner */}
       {isHost && (
         <div className="absolute -top-2 -left-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-xs px-3 py-1 rounded-full flex items-center gap-1 shadow-lg z-10 animate-pulse">
@@ -223,6 +224,7 @@ export function ChatMessage({
           )}
         </div>
       )}
+      </div>
     </div>
   );
 }
