@@ -14,7 +14,7 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-const SOCKET_URL = "http://localhost:3001";
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || "http://localhost:3001";
 
 export default function Index() {
   const [rooms, setRooms] = useState<Room[]>([]);

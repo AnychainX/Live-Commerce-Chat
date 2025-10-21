@@ -51,8 +51,8 @@ interface UseRoomReturn {
   addReaction: (messageId: string, emoji: string) => void;        // Add emoji reaction
 }
 
-// Socket.IO server URL - runs on port 3001 (separate from Remix dev server)
-const SOCKET_URL = "http://localhost:3001";
+// Socket.IO server URL - imported from environment variables
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || "http://localhost:3001";
 
 // Maximum messages to keep in memory (same as server-side limit)
 const MAX_MESSAGES = 300;

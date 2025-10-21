@@ -18,7 +18,7 @@ interface UseSocketReturn {
   toggleSlowMode: (enabled: boolean) => void;
 }
 
-const SOCKET_URL = "http://localhost:3001";
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || "http://localhost:3001";
 const MAX_MESSAGES = 300;
 
 export function useSocket(username: string): UseSocketReturn {
@@ -49,7 +49,7 @@ export function useSocket(username: string): UseSocketReturn {
       console.log("Connected to server");
       setConnected(true);
       setConnectionStatus("connected");
-      setCurrentUserId(newSocket.id);
+      setCurrentUserId(newSocket.id || null);
       newSocket.emit("join", { username });
       
       if (reconnectTimeoutRef.current) {
