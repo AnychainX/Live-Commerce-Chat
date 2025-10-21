@@ -205,10 +205,10 @@ export function ChatMessage({
 
       {/* Moderation Actions (Host Only) */}
       {showActions && !message.deleted && canModerate && (
-        <div className={`flex-shrink-0 flex gap-1 ${isCurrentUser ? "flex-row-reverse" : ""}`}>
+        <div className={`flex-shrink-0 self-start flex gap-1 ${isCurrentUser ? "flex-row-reverse" : ""}`}>
           <button
             onClick={() => onDelete(message.id)}
-            className="px-2 py-1 bg-red-600 hover:bg-red-700 text-white text-xs rounded transition-colors"
+            className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs rounded transition-colors whitespace-nowrap h-fit"
             title="Delete message"
           >
             Delete
@@ -216,7 +216,7 @@ export function ChatMessage({
           {!isCurrentUser && (
             <button
               onClick={() => onBan(message.userId)}
-              className="px-2 py-1 bg-orange-600 hover:bg-orange-700 text-white text-xs rounded transition-colors"
+              className="px-3 py-1.5 bg-orange-600 hover:bg-orange-700 text-white text-xs rounded transition-colors whitespace-nowrap h-fit"
               title="Ban user"
             >
               Ban

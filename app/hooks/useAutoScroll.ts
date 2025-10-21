@@ -24,7 +24,7 @@
  * ```
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 /**
  * Return type for useAutoScroll hook
@@ -78,7 +78,7 @@ export function useAutoScroll(dependencies: any[]): UseAutoScrollReturn {
    * Handles scroll events to detect if user is manually scrolling
    * Ignores scroll events triggered by our own scrollToBottom function
    */
-  const handleScroll = () => {
+  const handleScroll = useCallback(() => {
     // Ignore if element doesn't exist or if we're auto-scrolling
     if (!scrollRef.current || isAutoScrollingRef.current) return;
 
@@ -87,10 +87,12 @@ export function useAutoScroll(dependencies: any[]): UseAutoScrollReturn {
     // Check if user is "at bottom" with 100px threshold
     // This allows for minor scroll variations and smooth UX
     const isAtBottom = scrollHeight - scrollTop - clientHeight < 100;
+    
+    console.log('[AutoScroll] handleScroll - scrollTop:', scrollTop, 'scrollHeight:', scrollHeight, 'clientHeight:', clientHeight, 'isAtBottom:', isAtBottom);
 
     // If not at bottom, user must be reading history
     setIsUserScrolling(!isAtBottom);
-  };
+  }, []); // Empty deps - setIsUserScrolling is stable
 
   /**
    * Set up scroll event listener on mount
@@ -106,7 +108,7 @@ export function useAutoScroll(dependencies: any[]): UseAutoScrollReturn {
         scrollElement.removeEventListener("scroll", handleScroll);
       };
     }
-  }, []);
+  }, [handleScroll]);
 
   /**
    * Auto-scroll effect triggered by dependency changes (new messages)
@@ -117,11 +119,16 @@ export function useAutoScroll(dependencies: any[]): UseAutoScrollReturn {
    */
   useEffect(() => {
     // Only auto-scroll if user is NOT reading history (not manually scrolled up)
+    console.log('[AutoScroll] New message arrived. isUserScrolling:', isUserScrolling);
+    
     if (!isUserScrolling) {
+      console.log('[AutoScroll] Auto-scrolling to bottom');
       // setTimeout ensures the DOM has rendered the new messages first
       setTimeout(() => {
         scrollToBottom();
       }, 0);
+    } else {
+      console.log('[AutoScroll] User is reading history, NOT auto-scrolling');
     }
     // If user IS scrolling (reading history), do nothing - let them read in peace
   }, dependencies); // Re-run when dependencies change (e.g., messages.length increases)
