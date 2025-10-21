@@ -11,6 +11,7 @@ interface MessageListProps {
   scrollToBottom: () => void;
   onDeleteMessage: (messageId: string) => void;
   onBanUser: (userId: string) => void;
+  canModerate?: boolean;
 }
 
 export function MessageList({
@@ -22,6 +23,7 @@ export function MessageList({
   scrollToBottom,
   onDeleteMessage,
   onBanUser,
+  canModerate = true,
 }: MessageListProps) {
   const [pinnedMessages, setPinnedMessages] = useState<Set<string>>(new Set());
 
@@ -58,10 +60,10 @@ export function MessageList({
   const regularMessages = messages.filter((msg) => !pinnedMessages.has(msg.id));
 
   return (
-    <div className="flex-1 flex flex-col overflow-hidden">
+    <div className="h-full flex flex-col overflow-hidden">
       {/* Pinned Messages */}
       {pinnedMessageList.length > 0 && (
-        <div className="bg-purple-900/30 border-b border-purple-700 p-3 space-y-2 max-h-40 overflow-y-auto scrollbar-thin">
+        <div className="flex-shrink-0 bg-purple-900/30 border-b border-purple-700 p-3 space-y-2 max-h-40 overflow-y-auto scrollbar-thin">
           {pinnedMessageList.map((message) => (
             <ChatMessage
               key={message.id}
@@ -70,6 +72,7 @@ export function MessageList({
               isCurrentUser={message.userId === currentUserId}
               onDelete={onDeleteMessage}
               onBan={onBanUser}
+              canModerate={canModerate}
               isPinned
             />
           ))}
@@ -79,7 +82,7 @@ export function MessageList({
       {/* Regular Messages */}
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-thin"
+        className="flex-1 overflow-y-scroll p-4 space-y-3 scrollbar-thin"
       >
         {regularMessages.length === 0 ? (
           <div className="flex items-center justify-center h-full text-gray-500">
@@ -94,23 +97,11 @@ export function MessageList({
               isCurrentUser={message.userId === currentUserId}
               onDelete={onDeleteMessage}
               onBan={onBanUser}
+              canModerate={canModerate}
             />
           ))
         )}
       </div>
-
-      {/* Scroll to bottom button */}
-      {isUserScrolling && (
-        <div className="absolute bottom-24 right-6">
-          <button
-            onClick={scrollToBottom}
-            className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-4 py-2 shadow-lg transition-all hover:scale-105 flex items-center gap-2"
-          >
-            <span>↓</span>
-            <span className="text-sm">New messages</span>
-          </button>
-        </div>
-      )}
     </div>
   );
 }

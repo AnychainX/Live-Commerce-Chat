@@ -7,12 +7,14 @@ interface MessageInputProps {
     enabled: boolean;
     interval: number;
   };
+  canSendAnnouncements?: boolean;
 }
 
 export function MessageInput({
   onSendMessage,
   disabled,
   slowMode,
+  canSendAnnouncements = true,
 }: MessageInputProps) {
   const [text, setText] = useState("");
   const [isAnnouncement, setIsAnnouncement] = useState(false);
@@ -86,18 +88,21 @@ export function MessageInput({
         </div>
 
         <div className="flex items-center justify-between">
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={isAnnouncement}
-              onChange={(e) => setIsAnnouncement(e.target.checked)}
-              disabled={disabled}
-              className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
-            />
-            <span className="text-sm text-gray-300">
-              📢 Send as Announcement
-            </span>
-          </label>
+          {canSendAnnouncements && (
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={isAnnouncement}
+                onChange={(e) => setIsAnnouncement(e.target.checked)}
+                disabled={disabled}
+                className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
+              />
+              <span className="text-sm text-gray-300">
+                📢 Send as Announcement
+              </span>
+            </label>
+          )}
+          {!canSendAnnouncements && <div />}
 
           <button
             type="submit"

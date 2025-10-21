@@ -1,6 +1,14 @@
 # Quick Start Guide
 
-Get the Live Stream Chat System running in 5 minutes!
+Get the Live Shopping Platform running in 5 minutes!
+
+## 🛍️ What This Is
+
+A **live shopping platform** for Shopify merchants (think QVC meets Instagram Live):
+- Sellers create rooms to showcase products live
+- Buyers watch, chat, and purchase in real-time
+- Only sellers can moderate their rooms
+- Each room has its own chat, product, and Shopify link
 
 ## Prerequisites Check
 
@@ -60,64 +68,82 @@ Navigate to: **http://localhost:3000**
 
 ## First Use (1 minute)
 
-### 1. Join the chat
-- You'll see a username entry screen
-- Type any username (e.g., "Alice")
-- Click "Join Chat"
+### As a Seller (Create a Room)
 
-### 2. Test real-time messaging
-- Type a message in the text box
-- Press Enter to send
-- You'll see your message appear instantly!
+1. **On the lobby page**, click "Create Room" button
+2. **Fill in the form:**
+   - Room Name: "Summer Fashion Show"
+   - Your Name: "FashionStore"
+   - Product Name: "Designer Handbags"
+   - Product Description: "Limited edition leather bags"
+   - Shopify URL: (leave blank for default)
+3. **Click** "Create Room & Go Live"
+4. **You're now a host!** You can:
+   - See the video with product info
+   - Moderate chat (delete, ban, slow mode)
+   - Send announcements
+   - See "Host" badge
 
-### 3. Test multi-tab sync
-- Open a new browser tab
-- Go to http://localhost:3000 again
-- Use a different username (e.g., "Bob")
-- Send messages from both tabs
-- Watch them sync in real-time! ✨
+### As a Buyer (Join a Room)
+
+1. **On the lobby page**, click any live room
+2. **Enter your username** (e.g., "Shopper123")
+3. **Click** "Join Room"
+4. **You can now:**
+   - Watch the live video
+   - Chat with other viewers
+   - Click "Buy Now on Shopify" to purchase
+   
+### Test Multi-Room Features
+
+1. **Tab 1**: Create room as "Seller Alice"
+2. **Tab 2**: Join Alice's room as "Buyer Bob"
+3. **Tab 3**: Create a different room as "Seller Charlie"
+4. **Tab 4**: Join Charlie's room as "Buyer Diana"
+5. Each room has independent chat! ✨
 
 ## Quick Feature Tour (2 minutes)
 
-### Video Player
-- The video player on the left shows a live HLS test stream
-- Click play/pause to control playback
-- Adjust volume with the slider
-- Notice the "LIVE" badge indicating live streaming
+### Main Lobby Features
+- **Browse rooms**: See all active live shopping streams
+- **Room info**: Host name, product, viewer count, message count
+- **Create room**: Big button to start your own stream
+- **Live badges**: Red "LIVE" indicator on active streams
 
-### Chat Features
+### Room Features (As Host)
 
-#### Send a regular message
-1. Type in the text box at the bottom
-2. Press Enter
-3. Message appears with your username and timestamp
+#### Video & Shopping
+1. Video player shows your stream (test stream by default)
+2. Product card below video shows:
+   - Product name
+   - Product description
+   - "Buy Now on Shopify" button
 
-#### Send an announcement
-1. Check the "📢 Send as Announcement" box
-2. Type your message
-3. Press Enter
-4. Message appears with blue background and is pinned at top for 30 seconds
+#### Moderation Controls
+1. **Moderator Panel** at top (only hosts see this)
+2. **Send announcements**: Check announcement box, send
+3. **Delete messages**: Hover over any message → "Delete"
+4. **Ban users**: Hover over message → "Ban"
+5. **Slow mode**: Toggle in moderator panel
+6. **Clear all**: Nuclear option to clear all messages
 
-#### Delete a message
-1. Hover over any message
-2. Click "Delete" button
-3. Message changes to "[Message deleted]"
+### Room Features (As Viewer)
 
-#### Ban a user
-1. Hover over a message from another user
-2. Click "Ban" button
-3. User's messages gray out and they can't send messages
+#### Shopping
+1. Watch live video
+2. See product information
+3. Click "Buy Now on Shopify" → Opens Shopify in new tab
 
-#### Enable slow mode
-1. Look at the top bar for "Moderator Controls"
-2. Check "Slow Mode (10s)"
-3. Try sending multiple messages quickly
-4. You'll be rate-limited to one message every 10 seconds
+#### Chatting
+1. Type messages in the chat
+2. See other viewers' messages
+3. See host's announcements (pinned at top)
+4. No moderation controls (viewers can't moderate)
 
-#### Clear all messages
-1. Click "Clear All Messages" in the moderator controls
-2. Confirm the dialog
-3. All messages are cleared
+### Navigation
+- **"Back" button** in room → Returns to lobby
+- **"Back to all rooms"** link → Returns to lobby
+- **Logo/title** → Could link to lobby (currently doesn't)
 
 ## Testing the App
 
@@ -186,24 +212,36 @@ See `TESTING.md` for a comprehensive manual testing checklist.
 
 ## Common Use Cases
 
-### Use Case 1: Demo for stakeholders
-1. Start the servers
-2. Open on laptop + share screen
-3. Open on phone as second user
-4. Show real-time sync, moderation, announcements
+### Use Case 1: Live Shopping Demo
+1. **Tab 1**: Create room as "Fashion Brand"
+2. **Tab 2**: Join as buyer "Sarah"
+3. **Tab 3**: Join as buyer "Mike"
+4. **Demo flow**:
+   - Host announces "50% off for next 5 minutes!"
+   - Sarah asks "What sizes available?"
+   - Host replies "XS to XL in stock!"
+   - Mike clicks "Buy Now"
+   - Show real-time engagement
 
-### Use Case 2: Load testing
-1. Open 10-20 browser tabs
-2. Use different usernames
-3. Send messages rapidly
-4. Check performance stays smooth
+### Use Case 2: Moderation Demo
+1. **Tab 1**: Create room as host
+2. **Tab 2**: Join as viewer, send spam
+3. **Tab 1**: Host hovers → "Ban" spammer
+4. **Tab 2**: Spammer sees "You are banned"
+5. Show how host controls the room
 
-### Use Case 3: Development
+### Use Case 3: Multi-Room Testing
+1. Create 3 different rooms
+2. Join different rooms in different tabs
+3. Show independent chats
+4. Show each room has own viewers, messages
+
+### Use Case 4: Development
 1. Start dev servers
 2. Open VSCode
 3. Make changes to components
 4. See hot-reload in browser
-5. Write tests as you go
+5. Test across multiple rooms
 
 ## Keyboard Shortcuts
 
@@ -277,13 +315,32 @@ A: Yes! See DEPLOYMENT.md for complete production deployment guide.
 - [ ] Node.js 20+ installed
 - [ ] Dependencies installed (`npm install`)
 - [ ] Dev servers running (`npm run dev`)
-- [ ] Browser shows chat interface
-- [ ] Can send messages in one tab
-- [ ] Messages appear in second tab
+- [ ] Lobby page shows at http://localhost:3000
+- [ ] Can create a room
+- [ ] Can join room in second tab
+- [ ] Host can moderate (delete, ban, etc.)
+- [ ] Viewer cannot moderate
+- [ ] Messages sync between tabs
+- [ ] "Buy Now" button works
 - [ ] Video player loads and plays
-- [ ] All tests pass (`npm test`)
+- [ ] Only chat scrolls, not whole page
 
 If all checkboxes are ✅, you're ready to go! 🎉
+
+## What's Different from Original?
+
+This is a **major evolution** of the original chat system:
+
+| Feature | Original | Live Shopping Version |
+|---------|----------|----------------------|
+| Rooms | Single global | Multiple rooms ✨ |
+| Users | All equal | Host vs Viewers ✨ |
+| Moderation | Everyone | Host only ✨ |
+| Commerce | None | Buy button + Shopify ✨ |
+| Navigation | Direct to chat | Lobby → Rooms ✨ |
+| Scrolling | Page scrolls | Only chat scrolls ✨ |
+
+See `CHANGES.md` for complete details!
 
 ---
 

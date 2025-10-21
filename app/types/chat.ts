@@ -13,6 +13,21 @@ export interface User {
   username: string;
   banned: boolean;
   lastMessageTime: number;
+  role: "host" | "viewer";
+}
+
+export interface Room {
+  id: string;
+  name: string;
+  productName: string;
+  productDescription: string;
+  shopifyUrl: string;
+  hostId: string;
+  hostName: string;
+  videoUrl: string;
+  createdAt: number;
+  viewerCount: number;
+  messageCount: number;
 }
 
 export type ConnectionStatus = "connected" | "disconnected" | "reconnecting";
@@ -21,4 +36,3 @@ export interface SlowModeConfig {
   enabled: boolean;
   interval: number;
 }
-

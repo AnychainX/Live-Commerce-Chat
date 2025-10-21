@@ -106,10 +106,10 @@ export function VideoPlayer({
   };
 
   return (
-    <div className="relative bg-black rounded-lg overflow-hidden shadow-2xl">
+    <div className="relative bg-black rounded-lg overflow-hidden shadow-2xl w-full h-full">
       <video
         ref={videoRef}
-        className="w-full h-full"
+        className="w-full h-full object-contain"
         playsInline
         muted={isMuted}
         controls={false}

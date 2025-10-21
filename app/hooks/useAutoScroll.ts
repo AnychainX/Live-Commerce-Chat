@@ -9,47 +9,43 @@ interface UseAutoScrollReturn {
 export function useAutoScroll(dependencies: any[]): UseAutoScrollReturn {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isUserScrolling, setIsUserScrolling] = useState(false);
-  const userScrollTimeoutRef = useRef<NodeJS.Timeout>();
+  const isAutoScrollingRef = useRef(false);
 
   const scrollToBottom = () => {
     if (scrollRef.current) {
+      isAutoScrollingRef.current = true;
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      // Reset after scroll completes
+      setTimeout(() => {
+        isAutoScrollingRef.current = false;
+      }, 100);
     }
   };
 
   const handleScroll = () => {
-    if (!scrollRef.current) return;
+    if (!scrollRef.current || isAutoScrollingRef.current) return;
 
     const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
-    const isAtBottom = scrollHeight - scrollTop - clientHeight < 50;
+    const isAtBottom = scrollHeight - scrollTop - clientHeight < 100;
 
-    if (!isAtBottom) {
-      setIsUserScrolling(true);
-      if (userScrollTimeoutRef.current) {
-        clearTimeout(userScrollTimeoutRef.current);
-      }
-    } else {
-      setIsUserScrolling(false);
-    }
+    setIsUserScrolling(!isAtBottom);
   };
 
   useEffect(() => {
     const scrollElement = scrollRef.current;
     if (scrollElement) {
-      scrollElement.addEventListener("scroll", handleScroll);
+      scrollElement.addEventListener("scroll", handleScroll, { passive: true });
       return () => {
         scrollElement.removeEventListener("scroll", handleScroll);
-        if (userScrollTimeoutRef.current) {
-          clearTimeout(userScrollTimeoutRef.current);
-        }
       };
     }
   }, []);
 
   useEffect(() => {
-    if (!isUserScrolling) {
+    // Always scroll to bottom on new messages
+    setTimeout(() => {
       scrollToBottom();
-    }
+    }, 0);
   }, dependencies);
 
   return {

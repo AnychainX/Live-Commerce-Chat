@@ -7,6 +7,7 @@ interface ChatMessageProps {
   isCurrentUser: boolean;
   onDelete: (messageId: string) => void;
   onBan: (userId: string) => void;
+  canModerate?: boolean;
   isPinned?: boolean;
 }
 
@@ -16,6 +17,7 @@ export function ChatMessage({
   isCurrentUser,
   onDelete,
   onBan,
+  canModerate = true,
   isPinned = false,
 }: ChatMessageProps) {
   const [showActions, setShowActions] = useState(false);
@@ -104,7 +106,7 @@ export function ChatMessage({
         </div>
 
         {/* Hover Actions */}
-        {showActions && !message.deleted && (
+        {showActions && !message.deleted && canModerate && (
           <div className="flex-shrink-0 flex gap-1">
             <button
               onClick={() => onDelete(message.id)}
