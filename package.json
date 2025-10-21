@@ -1,0 +1,52 @@
+{
+  "name": "live-stream-chat",
+  "version": "1.0.0",
+  "description": "Real-time chat system with moderation for live commerce",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:remix\" \"npm run dev:socket\" --names \"REMIX,SOCKET\" --prefix-colors \"blue,green\"",
+    "dev:remix": "remix vite:dev",
+    "dev:socket": "tsx watch dev-server.js",
+    "build": "remix vite:build",
+    "start": "remix-serve ./build/server/index.js",
+    "typecheck": "tsc",
+    "test": "vitest",
+    "test:ui": "vitest --ui"
+  },
+  "dependencies": {
+    "@remix-run/node": "^2.12.0",
+    "@remix-run/react": "^2.12.0",
+    "@remix-run/serve": "^2.12.0",
+    "hls.js": "^1.5.15",
+    "isbot": "^5.1.17",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "socket.io": "^4.8.0",
+    "socket.io-client": "^4.8.0"
+  },
+  "devDependencies": {
+    "@remix-run/dev": "^2.12.0",
+    "@testing-library/jest-dom": "^6.5.0",
+    "@testing-library/react": "^16.0.1",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/node": "^22.7.5",
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.2",
+    "autoprefixer": "^10.4.20",
+    "concurrently": "^9.0.1",
+    "jsdom": "^25.0.1",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.13",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.2",
+    "vite": "^5.4.8",
+    "vite-tsconfig-paths": "^5.0.1",
+    "vitest": "^2.1.2"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
+
